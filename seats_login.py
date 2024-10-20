@@ -13,15 +13,15 @@ login_info["abdullah"] = ("abdullah.shah@qalamseminary.com", "Qalam#2024")
 login_info["saqib"] = ("mian.saqib@qalamseminary.com", "Zehra1029!")
 login_info["shaji"] = ("shaji.ul-islam@qalamseminary.com", "tyctej-jynhu9-mlbjez")
 
-user = 'abdullah'
+# user = 'saqib'
 #TODO: pass in user as cmd arg?
 
 def log(string):
   print(string, datetime.datetime.now().time())
 
-def login(driver, url):
+def login(driver, user):
   log('Starting Login Operation')
-  driver.get(url)
+  driver.get("https://qalam.seats.cloud/")
 
   # Wait for username field to be present
   username_field = WebDriverWait(driver, 10).until(
@@ -112,18 +112,20 @@ def find_todays_classes(driver):
 
   log("finished today's classes")
 
-# Replace with the appropriate web driver path
-driver = webdriver.Chrome()
 
-login_url = "https://qalam.seats.cloud/"  # Replace with the actual login URL
-
-login(driver, login_url)
-time.sleep(3)
-click_calendar_button(driver)
-time.sleep(3)
-# If sunday then click month button then week button cuz the website is retarded (it doesn't populate sun classes unless month button is clicked first)
-if datetime.date.today().strftime('%A')[:3].lower() == "sun":
-  click_month_then_week(driver)
-time.sleep(2)
-find_todays_classes(driver)
-time.sleep(3)
+for user in login_info.keys():
+  if user == 'shaji':
+    print('skipping shaji')
+  driver = webdriver.Chrome()
+  login(driver, user)
+  time.sleep(3)
+  click_calendar_button(driver)
+  time.sleep(3)
+  # If sunday then click month button then week button cuz the website is retarded (it doesn't populate sun classes unless month button is clicked first)
+  if datetime.date.today().strftime('%A')[:3].lower() == "sun":
+    click_month_then_week(driver)
+  time.sleep(2)
+  find_todays_classes(driver)
+  time.sleep(3)
+  driver.close()
+  print('-------------------------')
