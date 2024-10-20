@@ -116,6 +116,7 @@ def find_todays_classes(driver):
 for user in login_info.keys():
   if user == 'shaji':
     print('skipping shaji')
+    break
   driver = webdriver.Chrome()
   login(driver, user)
   time.sleep(3)
