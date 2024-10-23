@@ -5,18 +5,19 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
 import time
 import datetime
+import logging
 
 
 login_info = {}
 login_info["abdullah"] = ("abdullah.shah@qalamseminary.com", "Qalam#2024")
-login_info["saqib"] = ("mian.saqib@qalamseminary.com", "Zehra1029!")
-login_info["shaji"] = ("shaji.ul-islam@qalamseminary.com", "tyctej-jynhu9-mlbjez")
+# login_info["saqib"] = ("mian.saqib@qalamseminary.com", "Zehra1029!")
+# login_info["shaji"] = ("shaji.ul-islam@qalamseminary.com", "Al!za.2024")
 
-# user = 'saqib'
 #TODO: pass in user as cmd arg?
 
 def log(string):
   print(string, datetime.datetime.now().time())
+  logging.info(string)
 
 def login(driver, user):
   log('Starting Login Operation')
@@ -75,7 +76,7 @@ def find_todays_classes(driver):
 
   time.sleep(1)
 
-  print("num of classes:", len(classes_objects))
+  log(f"num of classes today: {len(classes_objects)}")
   for qalam_class in classes_objects:
     title = qalam_class.get_attribute("title")
 
@@ -83,7 +84,7 @@ def find_todays_classes(driver):
     # if 'Absent' in title:
     # if 'Marked as Attended' in title:
     if title.startswith('Scheduled'):
-      print(title)
+      log(f'Logging in for class: {title}')
     
       # get pop-up for last class
       # classes_objects[-1].click()
@@ -111,21 +112,22 @@ def find_todays_classes(driver):
 
   log("finished today's classes")
 
-
-for user in login_info.keys():
-  if user == 'shaji':
-    print('skipping shaji')
-    break
-  driver = webdriver.Chrome()
-  login(driver, user)
-  time.sleep(3)
-  click_calendar_button(driver)
-  time.sleep(3)
-  # If sunday then click month button then week button cuz the website is retarded (it doesn't populate sun classes unless month button is clicked first)
-  if datetime.date.today().strftime('%A')[:3].lower() == "sun":
-    click_month_then_week(driver)
-  time.sleep(2)
-  find_todays_classes(driver)
-  time.sleep(3)
-  driver.close()
-  print('-------------------------')
+if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO, filename="logfile", filemode="a+",
+                        format="%(asctime)-15s %(levelname)-8s %(message)s")
+    log('-------------------------')
+    log("Starting Script run")
+    for user in login_info.keys():
+      driver = webdriver.Chrome()
+      login(driver, user)
+      time.sleep(3)
+      click_calendar_button(driver)
+      time.sleep(3)
+      # If sunday then click month button then week button cuz the website is retarded (it doesn't populate sun classes unless month button is clicked first)
+      if datetime.date.today().strftime('%A')[:3].lower() == "sun":
+        click_month_then_week(driver)
+      time.sleep(2)
+      find_todays_classes(driver)
+      time.sleep(3)
+      driver.close()
+      log('-------------------------')
