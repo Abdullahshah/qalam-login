@@ -10,8 +10,8 @@ import logging
 
 login_info = {}
 login_info["abdullah"] = ("abdullah.shah@qalamseminary.com", "Qalam#2024")
-# login_info["saqib"] = ("mian.saqib@qalamseminary.com", "Zehra1029!")
-# login_info["shaji"] = ("shaji.ul-islam@qalamseminary.com", "Al!za.2024")
+login_info["saqib"] = ("mian.saqib@qalamseminary.com", "Zehra1029!")
+login_info["shaji"] = ("shaji.ul-islam@qalamseminary.com", "Al!za.2024")
 
 #TODO: pass in user as cmd arg?
 
@@ -22,7 +22,7 @@ def log(string):
 def login(driver, user):
   log('Starting Login Operation')
   driver.get("https://qalam.seats.cloud/")
-
+  
   # Wait for username field to be present
   username_field = WebDriverWait(driver, 10).until(
       EC.presence_of_element_located((By.ID, "UserName"))
@@ -48,9 +48,16 @@ def login(driver, user):
 
 def click_calendar_button(driver):
   log('Starting Calendar Button Click Operation')
-  # WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.CLASS_NAME, "mdc-tab.mat-mdc-tab-link.mat-mdc-focus-indicator"))).click()
-  driver.find_elements(By.CLASS_NAME, "mdc-tab.mat-mdc-tab-link.mat-mdc-focus-indicator")[1].click()
-  log('Finished Calendar Button Click Operation')
+  # WebDriverWait(driver, 3).until(EC.presence_of_element_located((By.CLASS_NAME, "mdc-tab.mat-mdc-tab-link.mat-mdc-focus-indicator"))).click()
+  # this is the student profile and calendar buttons at the top right
+  top_buttons = driver.find_elements(By.CLASS_NAME, "mdc-tab__text-label")
+  if top_buttons:
+     for button in top_buttons:
+        if(button.text == "Calendar"):
+            button.click()
+            return
+  log('Failed to find calendar button')
+  raise Exception('Failed to find calendar button')
 
 
 def click_month_then_week(driver):
@@ -115,6 +122,7 @@ def find_todays_classes(driver):
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, filename="logfile", filemode="a+",
                         format="%(asctime)-15s %(levelname)-8s %(message)s")
+
     log('-------------------------')
     log("Starting Script run")
     for user in login_info.keys():
