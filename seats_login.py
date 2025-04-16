@@ -127,10 +127,11 @@ if __name__ == "__main__":
     log("Starting Script run")
     for user in login_info.keys():
       driver = webdriver.Chrome()
+      driver.maximize_window()
       login(driver, user)
-      time.sleep(3)
+      time.sleep(5)
       click_calendar_button(driver)
-      time.sleep(3)
+      time.sleep(5)
       # If sunday then click month button then week button cuz the website is retarded (it doesn't populate sun classes unless month button is clicked first)
       if datetime.date.today().strftime('%A')[:3].lower() == "sun":
         click_month_then_week(driver)
